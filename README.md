@@ -1,3 +1,3 @@
 # PhD-textbook-interval-analysis
-# Examples for the book 
-# Together with Anastasya Karpova
+Examples for the textbook.
+Together with Anastasya Karpova
