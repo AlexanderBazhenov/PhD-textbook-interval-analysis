@@ -1,14 +1,22 @@
 % 2022-06-27
 % Examples FTI
-clear all;
-close all;
-dirroot = 'D:\Data\ST\2022\T\'
-dirroot ='e:\Users\Public\Documents\ST\2022\T\'
-% 2022-07-28
-dirroot = 'D:\T\'
-cd(dirroot), pwd
+clear all
+close all
 
-% pkg list 
+dirroot ='e:\Users\Public\Documents\ST\2023\T\', dirData = 'e:\Users\Public\Documents\ST\2022\T\Solar\'
+dirOld =  'e:\Users\Public\Documents\ST\2022\T\'
+% dirroot = 'd:\Data\ST\2023\T\', dirData = 'd:\Data\ST\2022\T\Solar\'
+% dirOld =  'd:\Data\ST\2022\T\'
+
+
+dirroot = 'D:\Data\ST\2023\T\'
+dirOld =  'd:\Data\ST\2022\T\'
+% dirroot ='e:\Users\Public\Documents\ST\2022\T\'
+addpath(dirroot)
+addpath(dirOld)
+
+
+% pkg list
 pkg load interval
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -999,10 +1007,10 @@ set(gca, 'Fontsize', 14)
    xlabel('\it x_1');
    ylabel('\it x_2');
 xlim([ -1.0 2.0 ] )
-ylim([ -1.0 3.0 ] )   
-axis('equal')   
+ylim([ -1.0 3.0 ] )
+axis('equal')
 %
-figure_name_out = 'Figureb1.23a.png'   
+figure_name_out = 'Figureb1.23a.png'
 print('-dpng', '-r300', figure_name_out), pwd
 %
 y = argmax
@@ -1036,9 +1044,9 @@ set(gca, 'Fontsize', 14)
    xlabel('\it x_1');
    ylabel('\it x_2');
 xlim([ -1.0 2.0 ] )
-ylim([ -1.0 3.0 ] )   
+ylim([ -1.0 3.0 ] )
 axis('equal')
-%           
+%
 figure_name_out = 'Figureb1.23b.png'
 print('-dpng', '-r300', figure_name_out), pwd
 
@@ -1066,13 +1074,13 @@ plot(xarray, Farray, '-r')
 hold on
 plot(xarray, Farray1, '-g')
 plot(xarray, Farray2, '-b')
-xxlim =[ -3.0 3.0 ] 
+xxlim =[ -3.0 3.0 ]
 xlim(xxlim )
 ylim([ -3.0 3.0 ] )
 set(gca, 'Fontsize', 14)
    xlabel('\it x_1');
    ylabel('\it x_2');
-plot(mid(X0), 0, 'sk')   
+plot(mid(X0), 0, 'sk')
 xx = [ xxlim(1) xxlim(2) ]
 yy = [0 0 ]
 plot(xx, yy, '--k')
@@ -1108,3 +1116,355 @@ Xnew=intersect(X0,N)
 X0=Xnew;
 % /Newton method step
 % ---------------------------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2023-01-05
+% Example 1.7.2
+##\begin{equation} \label{e:NonLinEx1}
+##\left \{ \begin{aligned}
+##&0.8x^2 + 1.5y^2 = 1, \\
+##&\ln{x} = y,
+##\end{aligned} \right.
+##\end{equation}
+
+figure
+hold on
+xx = 0:sqrt(1/0.8)/50: sqrt(1/0.8)
+yy = sqrt( (1- 0.8*xx.^2 )/1.5 )
+plot(xx, yy,'.k');
+plot(xx, yy,'-k');
+
+xx = 0:sqrt(1/0.8)/50: sqrt(1/0.8)
+yy = log(xx)
+plot(xx, yy,'.k');
+plot(xx, yy,'-k');
+
+xlim([0 1.3])
+ylim([-0.3 0.3])
+% ---------------------------------------------
+% START
+X0=[infsup(0.8,1.2), infsup(-0.2,0.2)]'
+
+X1=X0(1); X2=X0(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','b');
+%
+##F = X0
+##F(1) = 0.8*X1^2 +1.6*X2^2 -1
+##F(2) = log(X1)-X2
+
+
+% Newton method step
+X1=X0(1); X2=X0(2);
+J=[1.6*X1 3*X2; 1/X1 -1]
+Y=inv(J)
+y=mid(X0);
+y1=y(1); y2=y(2);
+F(1) = 0.8*y1^2 +1.5*y2^2 -1;
+F(2) = log(y1)-y2;
+% Newtonoperator
+N = y' - (Y*F)';
+X1=N(1); X2=N(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','red');
+Xnew=intersect(X0',N)
+X0=Xnew';
+% /Newton method step
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+plot(y1,y2,'sr')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2023-01-09
+% Example 1.7.3
+% % Krawczyk non-linear
+##\begin{equation} \label{e:NonLinEx2}
+##\left \{ \begin{aligned}
+##&\frac{1}{x^2-2} = y, \\
+##&x = y^2,
+##\end{aligned} \right.
+##\end{equation}
+
+
+
+% ---------------------------------------------
+% START
+X0=[infsup(1.5,1.9), infsup(1.1,1.5)]'
+
+
+figure
+X1=X0(1); X2=X0(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','b');
+
+% Krawczyk operator
+% 2018
+% Krawczyk method step
+X1=X0(1); X2=X0(2);
+L = [-2*X1/(X1^2-2)^2 -1; 1 -2*X2];
+Lambda=inv(mid(L));
+y=mid(X0);
+y1=y(1); y2=y(2);
+F(1) = 1/(y1^2-2) -y2;
+F(2) = y1-y2^2;
+I = eye(2);
+K = y-Lambda*F' -(I-Lambda*L)*(X0-y);
+X1=K(1); X2=K(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','k');
+Xnew=intersect(X0,K);
+X0=Xnew;
+% /Krawczyk method step
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 2023-01-13
+% Example 1.7.5
+##????????? ???????????? ????? ???????, ?????? ??????? ????????????? ??????????? ????????? \label{p:NonLin1D}
+##\begin{equation} \label{e:NonLinEx3}
+##    [2.0,2.2]\sqrt{x} + [0.3,0.4]x - [3.0,3.1] = 0.
+##\end{equation}
+
+a2 = infsup(2.0,2.2)
+a1 = infsup(0.3,0.4)
+a0 = -infsup(3.0,3.1)
+
+% START
+X0= infsup(1, 2)
+%
+% F = a2*sqrt(X0) + a1*X0 +a0
+% J = a2/(2*sqrt(X0)) + a1*X0
+
+disp(' mid X')
+X0= infsup(1, 2)
+% Newton method step
+for steps=1:4
+steps-1
+J=a2/(2*sqrt(X0)) + a1*X0;
+Y=inv(J);
+y=mid(X0);
+F = a2*sqrt(y) + a1*y + a0 ;
+% Newtonoperator
+N = y - (Y*F)
+% N = y - F/J
+Xnew=intersect(X0',N)
+X0=Xnew';
+% /Newton method step
+end
+
+
+disp('inf X')
+X0= infsup(1, 2)
+% Newton method step
+for steps=1:5
+  steps
+J=a2/(2*sqrt(X0)) + a1*X0;
+Y=inv(J);
+y=inf(X0);
+F = a2*sqrt(y) + a1*y +a0 ;
+% Newtonoperator
+N = y - (Y*F)
+Xnew=intersect(X0',N)
+X0=Xnew';
+% /Newton method step
+end
+
+disp('sup X')
+X0= infsup(1, 2)
+% Newton method step
+for steps=1:7
+J=a2/(2*sqrt(X0)) + a1*X0;
+Y=inv(J);
+y=inf(X0);
+F = a2*sqrt(y) + a1*y +a0 ;
+% Newtonoperator
+N = y - (Y*F)
+Xnew=intersect(X0',N)
+X0=Xnew';
+% /Newton method step
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Example 1.7.6
+##\begin{equation} \label{e:NonLinEx4}
+##    \left \{
+##    \begin{aligned}
+##    &[-0.75,-0.50]x + [0.50,0.75] = 0, \\
+##    &[1.00,2.00] \arcsin{x} = 0.
+##    \end{aligned}
+##    \right.
+##\end{equation}
+
+% ---------------------------------------------
+% START
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+
+figure
+X1=X0(1); X2=X0(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','b');
+hold on
+%
+##F = X0
+##F(1) = 0.8*X1^2 +1.6*X2^2 -1
+##F(2) = log(X1)-X2
+
+disp(' mid X')
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+% Newton method step
+X1=X0(1); X2=X0(2);
+##J=[1.6*X1 3*X2; 1/X1 -1]
+##Y=inv(J)
+y=mid(X0);
+y1=y(1); y2=y(2);
+F(1) = infsup(-0.75, -0.5)*y1 + infsup(0.5, 0.75) -y2;
+F(2) = infsup(1, 2)*asin(y1)-y2;
+Y = [ -1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) ), 1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) );
+-1/( infsup(0.25, 0.75)*sqrt(1-y1^2) + infsup(0.5, 2.0)),  infsup(-0.75, -0.5)/(infsup(0.5, 0.75)+   infsup(1, 2)/sqrt(1-y1^2)) ]
+% Newtonoperator
+N = y - (Y*F');
+X1=N(1); X2=N(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','red');
+Xnew=intersect(X0,N)
+X0=Xnew;
+% /Newton method step
+
+disp(' inf X')
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+% Newton method step
+X1=X0(1); X2=X0(2);
+##J=[1.6*X1 3*X2; 1/X1 -1]
+##Y=inv(J)
+y=inf(X0);
+y1=y(1); y2=y(2);
+F(1) = infsup(-0.75, -0.5)*y1 + infsup(0.5, 0.75) -y2;
+F(2) = infsup(1, 2)*asin(y1)-y2;
+Y = [ -1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) ), 1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) );
+-1/( infsup(0.25, 0.75)*sqrt(1-y1^2) + infsup(0.5, 2.0)),  infsup(-0.75, -0.5)/(infsup(0.5, 0.75)+   infsup(1, 2)/sqrt(1-y1^2)) ]
+% Newtonoperator
+N = y - (Y*F');
+X1=N(1); X2=N(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','red');
+Xnew=intersect(X0,N)
+X0=Xnew;
+% /Newton method step
+
+
+disp(' sup X')
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+% Newton method step
+X1=X0(1); X2=X0(2);
+##J=[1.6*X1 3*X2; 1/X1 -1]
+##Y=inv(J)
+y=sup(X0);
+y1=y(1); y2=y(2);
+F(1) = infsup(-0.75, -0.5)*y1 + infsup(0.5, 0.75) -y2;
+F(2) = infsup(1, 2)*asin(y1)-y2;
+Y = [ -1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) ), 1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) );
+-1/( infsup(0.25, 0.75)*sqrt(1-y1^2) + infsup(0.5, 2.0)),  infsup(-0.75, -0.5)/(infsup(0.5, 0.75)+   infsup(1, 2)/sqrt(1-y1^2)) ]
+% Newtonoperator
+N = y - (Y*F');
+X1=N(1); X2=N(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','red');
+Xnew=intersect(X0,N)
+X0=Xnew;
+% /Newton method step
+
+disp(' infsup X')
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+% Newton method step
+X1=X0(1); X2=X0(2);
+##J=[1.6*X1 3*X2; 1/X1 -1]
+##Y=inv(J)
+y1=inf(X0(1));
+y2=sup(X0(2));
+y = [ y1; y2];
+F(1) = infsup(-0.75, -0.5)*y1 + infsup(0.5, 0.75) -y2;
+F(2) = infsup(1, 2)*asin(y1)-y2;
+Y = [ -1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) ), 1/(infsup(0.5, 0.75) +  infsup(1, 2)/sqrt(1-y1^2) );
+-1/( infsup(0.25, 0.75)*sqrt(1-y1^2) + infsup(0.5, 2.0)),  infsup(-0.75, -0.5)/(infsup(0.5, 0.75)+   infsup(1, 2)/sqrt(1-y1^2)) ]
+% Newtonoperator
+N = y - (Y*F');
+X1=N(1); X2=N(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+line(Xplot, Yplot,'Color','red');
+Xnew = intersect(X0,N)
+X0=Xnew;
+% /Newton method step
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+X0=[infsup(0.1,0.7), infsup(0.1,0.7)]'
+
+figure
+X1=X0(1); X2=X0(2);
+Xplot=[inf(X1) inf(X1) sup(X1) sup(X1) inf(X1) ];
+Yplot=[inf(X2) sup(X2) sup(X2) inf(X2) inf(X2)];
+h =line(Xplot, Yplot,'Color','b');
+hold on
+XX = [ 0.2964 0.1811 0.4857 0.2835 ]
+YY = [ 0.6018 0.3642 0.5072 0.2874 ]
+h = plot(XX, YY, 'ob')
+
+% Newton method step
+X1=X0(1); X2=X0(2);
+y1=inf(X0(1));
+y2=inf(X0(2));
+y = [ y1; y2];
+ExamplesFTI175
+N= y - (Y*F');
+plotN
+set(h, 'color', [0 0 0])
+Nii = N;
+%
+
+%
+y1=inf(X0(1));
+y2=sup(X0(2));
+y = [ y1; y2];
+ExamplesFTI175
+N= y - (Y*F');
+plotN
+set(h, 'color', [0 0 0])
+Nis = N;
+%set(h, 'linewidth', 2)
+N=intersect(Nii,Nis)
+plotN
+set(h, 'color', [1 0 0])
+
+Xnew = intersect(X0,N)
+X0=Xnew;
+% /Newton method step
+
+figure_name_out=strcat('Example1.7.5','InfInf cap InfSup', '.png')
+print('-dpng', '-r300', figure_name_out), pwd
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pbaspect([1 1 1])
+
+y1=mid(X0(1));
+y2=mid(X0(2));
+y = [ y1; y2];
+ExamplesFTI175
+N= y - (Y*F');
+plotN
+set(h, 'color', [0 0 0])
+Nm = N;
+%
+N=intersect(Nii,Nm)
+plotN
+set(h, 'color', [1 0 0])
+
+
+
+
+
