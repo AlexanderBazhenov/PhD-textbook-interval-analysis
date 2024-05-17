@@ -1,21 +1,30 @@
 % 2022-06-27
 % Examples FTI
+% 2024-05-17
 clear all
 close all
 
-dirroot ='e:\Users\Public\Documents\ST\2023\T\', dirData = 'e:\Users\Public\Documents\ST\2022\T\Solar\'
-dirOld =  'e:\Users\Public\Documents\ST\2022\T\'
-% dirroot = 'd:\Data\ST\2023\T\', dirData = 'd:\Data\ST\2022\T\Solar\'
-% dirOld =  'd:\Data\ST\2022\T\'
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     PLACE    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dirroot = 'D:\Data\ST\2023\T\'
+dirki = 'D:\Data\ST\2023\T\kinterval-0.0.1'
 dirOld =  'd:\Data\ST\2022\T\'
-% dirroot ='e:\Users\Public\Documents\ST\2022\T\'
+% HomePC
+dirroot = 'D:\ST\2024\T\'
+dirki = 'D:\ST\2023\T\kinterval-0.0.1'
+dirOld2022 =  'd:\ST\2022\T\'
+dirOld2023 =  'd:\ST\2023\T\'
+% FTI
+dirroot ='E:\Users\Public\Documents\ST\2023\T\'
+dirki = 'e:\Users\Public\Documents\ST\2023\T\kinterval-0.0.1'
+dirOld =  'e:\Users\Public\Documents\ST\2022\T\'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     START    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath(dirroot)
-addpath(dirOld)
-
-
+addpath(dirOld2022)
+addpath(dirOld2023)
+cd(dirroot)
 % pkg list
 pkg load interval
 
@@ -71,6 +80,26 @@ end
 format short
 disp(x)
 
+%%%%%%%%%%%%%%% 2023-06-04
+phi = midrad(pi/4, 1.6e-3)
+R = [ cos(phi) -sin(phi); sin(phi) cos(phi) ]
+format short
+T = R * R'
+format long
+T = R * R'
+x1 = T * x0
+
+n=100
+x=x1
+for jj=1:n
+  x = T*x;
+end
+
+format short
+disp(x)
+%%%%%%%%%%%%%%% 2023-06-04
+
+
 % Example 1.2.2
 x0 = [ infsup(-0.5, 0.5), infsup(10.5, 11.5) ]'
 phi = midrad(pi/3, 1.6e-3)
@@ -89,21 +118,188 @@ x=R * x0
 format short
 disp(x)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%% 2023-06-04
+phi = midrad(pi/4, 1.6e-3)
+x0 = [ infsup(-0.5, 0.5), infsup(10.5, 11.5) ]'
+R = [ cos(phi) -sin(phi); sin(phi) cos(phi) ]
+n=8
+x=x0
+for jj=1:n
+  x = R*x;
+end
+format short
+disp(x)
+
+phi = midrad(0, 1.6e-3)
+R = [ cos(phi) -sin(phi); sin(phi) cos(phi) ]
+x=R * x0
+format short
+disp(x)
+
+
+%%%%%%%%%%%%%%% 2023-06-04
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% 2024 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Example 1.2.1
+% inf sup
+
+a =  [ infsup(-2,1) infsup(5, 7) ]
+infa = inf(a)
+supa = sup(a)
+
+A = [infsup(0,3) infsup(9, 11) ; infsup(-8,-6) infsup(3, 4)]
+infA = inf(A)
+supA = sup(A)
+
+% Example 1.2.2
+% vertex
+a =  [ infsup(-2,1) infsup(5, 7) ]'
+vert_a1 = [ inf(a(1)) inf(a(2)) ]'
+vert_a2 = [ inf(a(1)) sup(a(2)) ]'
+vert_a3 = [ sup(a(1)) inf(a(2)) ]'
+vert_a4 = [ sup(a(1)) sup(a(2)) ]'
 
 % Example 1.2.3
+% mult A-int b-point
+A = [infsup(-1,1) infsup(2, 5) ; infsup(3,8) infsup(-6, -4)]
+b =  [ infsup(2,2); infsup(1, 1) ]
+Ab = A*b
+
+% Example 1.2.4
+% mid(AB) = mid(A)*B, B - point matrix
+
+A = [infsup(1,8) infsup(0, 3) ; infsup(5,6) infsup(-4, -2)]
+B = [infsup(1,1) infsup(2, 2) ; infsup(1,1) infsup(4, 4)]
+AB = A*B
+mid(AB)
+mid(A)*B
+
+% Example 1.2.5
+% wrappting effect 1
+
+% Example 1.2.6
+% wrappting effect 2
+
+% Example 1.2.7
+% matrix mult commutativity
 
 A = [ infsup(-2,1) infsup(1,2) ]
 B = [ infsup(2,3) ; infsup(5,6) ]
 C = [ infsup(-1,1) infsup(4,5) ]
 
-(A*B)*C
-A*(B*C)
+ABC1 = (A*B)*C
+ABC2 = A*(B*C)
 
 C = [ infsup(-1,1);  infsup(4,5) ]
 
 A*(B+C)
 A*B+A*C
+
+
+% Example 1.2.8
+% vector martix norm
+
+A = [infsup(6,9) infsup(1, 2) ; infsup(-3,3) infsup(5, 7)]
+a =  [ infsup(4,9) ; infsup(-2 , -1) ]
+
+
+norm1_a = mag(a(1))+mag(a(2))
+norm2_a = sqrt(mag(a(1))^2+mag(a(2))^2)
+
+norm1_A1 = max ( mag(A(1,1))+mag(A(2,1)), mag(A(1,2))+mag(A(2,2)))
+norminf_A = max ( mag(A(1,1))+mag(A(1,2)), mag(A(1,2))+mag(A(2,2)))
+
+AAT = mag(A)*mag(A')
+svd(AAT)
+
+Aa=A*a
+norm1_AaM = mag(Aa(1))+mag(Aa(2))
+norm1_Av = norm1_a * norm1_A1
+
+% Example 1.2.9
+% vector martix norm
+
+A1 = [infsup(-3,4) infsup(-1, 1) ; infsup(-1, 1) infsup(-1, 1)]
+A2 = [infsup(-4,4) infsup(-1, 1) ; infsup(-1, 1) infsup(-1, 1)]
+A3 = [infsup(-2,5) infsup(-1, 1) ; infsup(-1, 1) infsup(-1, 1)]
+
+radA1 = rad(A1)
+radA2 = rad(A2)
+radA3 = rad(A3)
+
+norminf_A1 = max ( radA1(1,1)+radA1(1,2), radA1(1,2) + radA1(2,2))
+norminf_A2 = max ( radA2(1,1)+radA2(1,2), radA2(1,2) + radA2(2,2))
+norminf_A3 = max ( radA3(1,1)+radA3(1,2), radA3(1,2) + radA3(2,2))
+
+norminf_A1 = max ( mag(A1(1,1))+mag(A1(1,2)), mag(A1(1,2))+mag(A1(2,2)))
+norminf_A2 = max ( mag(A2(1,1))+mag(A2(1,2)), mag(A2(1,2))+mag(A2(2,2)))
+norminf_A3 = max ( mag(A3(1,1))+mag(A3(1,2)), mag(A3(1,2))+mag(A3(2,2)))
+
+% Example 1.2.10
+% dist vector matrix
+
+a =  [ infsup(-3,2) ; infsup(5, 6) ]
+b =  [ infsup(7,10) ; infsup(-2, -1) ]
+
+dist1_ab = max( abs(inf(a(1))-inf(b(1))),  abs(sup(a(1))-sup(b(1)))) + ...
+max( abs(inf(a(2))-inf(b(2))),  abs(sup(a(2))-sup(b(2))))
+
+
+dist2_ab = sqrt((max( abs(inf(a(1))-inf(b(1))),  abs(sup(a(1))-sup(b(1)))))^2 + ...
+(max( abs(inf(a(2))-inf(b(2))),  abs(sup(a(2))-sup(b(2)))))^2)
+
+% Example 1.2.11
+%  matrix dist properties
+
+A = [infsup(-8,-5) infsup(-8, -1) ; infsup(-6, 8) infsup(-3, 4)]
+B = [infsup(-10,6) infsup(-6, 6) ; infsup(-2, 2) infsup(-9, -7)]
+C = [infsup(-7,-2) infsup(-4, 2) ; infsup(5, 10) infsup(-9, 1)]
+D = [infsup(-5,10) infsup(3, 10) ; infsup(1, 4) infsup(-5, -4)]
+
+AC = A + C
+BD = B + D
+
+dist1_AC = max( abs(inf(AC(1,1))-inf(BD(1,1))),  abs(sup(AC(1,1))-sup(BD(1,1)))) + ...
+max( abs(inf(AC(1,2))-inf(BD(1,2))),  abs(sup(AC(1,2))-sup(BD(1,2)))) + ...
+max( abs(inf(AC(2,1))-inf(BD(2,1))),  abs(sup(AC(2,1))-sup(BD(2,1)))) + ...
+max( abs(inf(AC(2,2))-inf(BD(2,2))),  abs(sup(AC(2,2))-sup(BD(2,2))))
+
+
+dist2_ACBD = sqrt(max( abs(inf(AC(1,1))-inf(BD(1,1))),  abs(sup(AC(1,1))-sup(BD(1,1))))^2 + ...
+max( abs(inf(AC(1,2))-inf(BD(1,2))),  abs(sup(AC(1,2))-sup(BD(1,2))))^2 + ...
+max( abs(inf(AC(2,1))-inf(BD(2,1))),  abs(sup(AC(2,1))-sup(BD(2,1))))^2 + ...
+max( abs(inf(AC(2,2))-inf(BD(2,2))),  abs(sup(AC(2,2))-sup(BD(2,2))))^2)
+
+dist2_AB = sqrt(max( abs(inf(A(1,1))-inf(B(1,1))),  abs(sup(A(1,1))-sup(B(1,1))))^2 + ...
+max( abs(inf(A(1,2))-inf(B(1,2))),  abs(sup(A(1,2))-sup(B(1,2))))^2 + ...
+max( abs(inf(A(2,1))-inf(B(2,1))),  abs(sup(A(2,1))-sup(B(2,1))))^2 + ...
+max( abs(inf(A(2,2))-inf(B(2,2))),  abs(sup(A(2,2))-sup(B(2,2))))^2)
+
+dist2_CD = sqrt(max( abs(inf(C(1,1))-inf(D(1,1))),  abs(sup(C(1,1))-sup(D(1,1))))^2 + ...
+max( abs(inf(C(1,2))-inf(D(1,2))),  abs(sup(C(1,2))-sup(D(1,2))))^2 + ...
+max( abs(inf(C(2,1))-inf(D(2,1))),  abs(sup(C(2,1))-sup(D(2,1))))^2 + ...
+max( abs(inf(C(2,2))-inf(D(2,2))),  abs(sup(C(2,2))-sup(D(2,2))))^2)
+
+dist2_AB + dist2_CD
+
+Dist_AB = [ max( abs(inf(A(1,1))-inf(B(1,1))),  abs(sup(A(1,1))-sup(B(1,1))))  ...
+max( abs(inf(A(1,2))-inf(B(1,2))),  abs(sup(A(1,2))-sup(B(1,2)))) ; ...
+max( abs(inf(A(2,1))-inf(B(2,1))),  abs(sup(A(2,1))-sup(B(2,1)))) ...
+max( abs(inf(A(2,2))-inf(B(2,2))),  abs(sup(A(2,2))-sup(B(2,2)))) ]
+
+Dist_CD = [ max( abs(inf(C(1,1))-inf(D(1,1))),  abs(sup(C(1,1))-sup(D(1,1))))  ...
+max( abs(inf(C(1,2))-inf(D(1,2))),  abs(sup(C(1,2))-sup(D(1,2)))) ; ...
+max( abs(inf(C(2,1))-inf(D(2,1))),  abs(sup(C(2,1))-sup(D(2,1)))) ...
+max( abs(inf(C(2,2))-inf(D(2,2))),  abs(sup(C(2,2))-sup(D(2,2)))) ]
+
+Dist_AB + Dist_CD
+
+Dist_ACBD = [ max( abs(inf(AC(1,1))-inf(BD(1,1))),  abs(sup(AC(1,1))-sup(BD(1,1)))) ...
+max( abs(inf(AC(1,2))-inf(BD(1,2))),  abs(sup(AC(1,2))-sup(BD(1,2)))) ; ...
+max( abs(inf(AC(2,1))-inf(BD(2,1))),  abs(sup(AC(2,1))-sup(BD(2,1))))  ...
+max( abs(inf(AC(2,2))-inf(BD(2,2))),  abs(sup(AC(2,2))-sup(BD(2,2)))) ]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 2024 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Example 1.2.4
 
@@ -247,6 +443,38 @@ Fslope = x+y
 SLinf = inf(x)^2 + ( x + cinf  ) *( x - cinf )
 SLmid = mid(x)^2 + ( x + cmid  ) *( x - cmid )
 SLsup = sup(x)^2 + ( x + csup  ) *( x - csup )
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2023-11-06
+% Example 1.3.3 - 2 variables
+
+x = infsup(0,2)
+y = infsup(1,4)
+X = [x; y]
+% f(x,y) = x^2+sqrt(y)
+RANF = x^2+sqrt(y)
+
+% Diff estimate = MV = Mean Value
+Fdiff = [2*x 1/(2*sqrt(y)) ]
+
+% points
+c1 = [inf(x); inf(y)]
+c2 = [inf(x); sup(y)]
+c3 = [sup(x); sup(y)]
+
+% MV estimates
+Finfc1 = c1(1)^2 + sqrt(c1(2)) + Fdiff*( X - c1 )
+Finfc2 = c2(1)^2 + sqrt(c2(2)) + Fdiff*( X - c2 )
+Finfc3 = c3(1)^2 + sqrt(c3(2)) + Fdiff*( X - c3 )
+
+% SL estimates
+% Fslopex = x +cx
+% Fslopey = 1/(sqrt(y)+sqrt(cy))
+Fslopec1 = c1(1)^2 + sqrt(c1(2)) +  (x +c1(1))*( X(1) - c1(1) )+1/(sqrt(y)+sqrt(c1(2)))*(y-c1(2))
+Fslopec2 = c2(1)^2 + sqrt(c2(2)) +  (x +c2(1))*( X(1) - c2(1) )+1/(sqrt(y)+sqrt(c2(2)))*(y-c2(2))
+Fslopec3 = c3(1)^2 + sqrt(c3(2)) +  (x +c3(1))*( X(1) - c3(1) )+1/(sqrt(y)+sqrt(c3(2)))*(y-c3(2))
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Example 1.3.4
 
@@ -1292,8 +1520,8 @@ end
 ##\begin{equation} \label{e:NonLinEx4}
 ##    \left \{
 ##    \begin{aligned}
-##    &[-0.75,-0.50]x + [0.50,0.75] = 0, \\
-##    &[1.00,2.00] \arcsin{x} = 0.
+##    &[-0.75,-0.50]x + [0.50,0.75]y = 0, \\
+##    &[1.00,2.00] \arcsin{x} - y = 0.
 ##    \end{aligned}
 ##    \right.
 ##\end{equation}
